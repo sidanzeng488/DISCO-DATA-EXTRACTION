@@ -315,7 +315,7 @@
                     <div class="columns-section">
                         <div class="columns-header">
                             <span>Select Columns</span>
-                            <button onclick="selectAll()">Select All</button>
+                            <button onclick="selectAll()">Unselect All</button>
                         </div>
                         <div class="columns-list" id="columns-list">
                             <div class="loading">Loading columns...</div>
@@ -404,9 +404,12 @@
             }
         }
         
-        // Select all columns
+        // Toggle select/unselect all columns
+        let allSelected = true;
         function selectAll() {
-            document.querySelectorAll('#columns-list input').forEach(cb => cb.checked = true);
+            allSelected = !allSelected;
+            document.querySelectorAll('#columns-list input').forEach(cb => cb.checked = allSelected);
+            document.querySelector('.columns-header button').textContent = allSelected ? 'Unselect All' : 'Select All';
         }
         
         // Get selected columns
