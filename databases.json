@@ -1,0 +1,65 @@
+{
+  "source": "https://discodata.eea.europa.eu/",
+  
+  "databases": {
+    "WISE_UWWTD": {
+      "name": "Urban Waste Water Treatment Directive",
+      "version": "v1r1"
+    },
+    "WISE_WFD": {
+      "name": "Water Framework Directive",
+      "version": "v2r1"
+    }
+  },
+
+  "tables": [
+    {
+      "id": "uwwtps",
+      "name": "Treatment Plants (T_UWWTPS)",
+      "full_name": "[WISE_UWWTD].[v1r1].[T_UWWTPS]",
+      "columns": 74
+    },
+    {
+      "id": "agglomerations",
+      "name": "Agglomerations (T_Agglomerations)",
+      "full_name": "[WISE_UWWTD].[v1r1].[T_Agglomerations]",
+      "columns": 54
+    },
+    {
+      "id": "uwwtpagglos",
+      "name": "Plant-Agglomeration Links (T_UWWTPAgglos)",
+      "full_name": "[WISE_UWWTD].[v1r1].[T_UWWTPAgglos]",
+      "columns": 13
+    },
+    {
+      "id": "discharge",
+      "name": "Discharge Points (T_DischargePoints)",
+      "full_name": "[WISE_UWWTD].[v1r1].[T_DischargePoints]",
+      "columns": 32
+    },
+    {
+      "id": "art17",
+      "name": "Art17 Investments (T_Art17_FLAUWWTP)",
+      "full_name": "[WISE_UWWTD].[v1r1].[T_Art17_FLAUWWTP]",
+      "columns": 28
+    },
+    {
+      "id": "surface_water",
+      "name": "Surface Water Body (SWB)",
+      "full_name": "[WISE_WFD].[v2r1].[SWB_SurfaceWaterBody]",
+      "columns": 34
+    },
+    {
+      "id": "groundwater",
+      "name": "Groundwater Body (GWB)",
+      "full_name": "[WISE_WFD].[v2r1].[GWB_GroundWaterBody]",
+      "columns": 31
+    },
+    {
+      "id": "groundwater_protected",
+      "name": "Groundwater Protected Areas",
+      "full_name": "[WISE_WFD].[v2r1].[GWB_GroundWaterBody_GWAssociatedProtectedArea]",
+      "columns": 33
+    }
+  ]
+}

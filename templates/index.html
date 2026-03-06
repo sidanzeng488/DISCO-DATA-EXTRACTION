@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISCODATA Explorer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0 30px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #4fc3f7;
+            margin-bottom: 5px;
+        }
+        
+        header p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        header a {
+            color: #4fc3f7;
+            text-decoration: none;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .panel h2 {
+            font-size: 1rem;
+            color: #4fc3f7;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .table-list {
+            list-style: none;
+        }
+        
+        .table-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #1a1a2e;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .table-item:hover {
+            background: #0f3460;
+        }
+        
+        .table-item.active {
+            border-color: #4fc3f7;
+            background: #0f3460;
+        }
+        
+        .table-item .name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .table-item .meta {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        
+        .columns-section {
+            margin-bottom: 20px;
+        }
+        
+        .columns-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .columns-header button {
+            background: none;
+            border: 1px solid #4fc3f7;
+            color: #4fc3f7;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .columns-header button:hover {
+            background: #4fc3f7;
+            color: #1a1a2e;
+        }
+        
+        .columns-list {
+            max-height: 250px;
+            overflow-y: auto;
+            background: #1a1a2e;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .column-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .column-item:hover {
+            background: #0f3460;
+        }
+        
+        .column-item input {
+            margin-right: 10px;
+        }
+        
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        
+        .filter-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .filter-section input {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a2e;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #eee;
+            font-family: monospace;
+        }
+        
+        .filter-section input:focus {
+            outline: none;
+            border-color: #4fc3f7;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #4fc3f7;
+            color: #1a1a2e;
+        }
+        
+        .btn-primary:hover {
+            background: #29b6f6;
+        }
+        
+        .btn-secondary {
+            background: #333;
+            color: #eee;
+        }
+        
+        .btn-secondary:hover {
+            background: #444;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            margin-top: 20px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .results-count {
+            color: #888;
+            font-size: 0.85rem;
+        }
+        
+        .results-table {
+            width: 100%;
+            overflow-x: auto;
+            background: #1a1a2e;
+            border-radius: 6px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+            white-space: nowrap;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        th {
+            background: #0f3460;
+            color: #4fc3f7;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover td {
+            background: #16213e;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        
+        .error {
+            background: #5c2020;
+            color: #f88;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DISCODATA Explorer</h1>
+            <p>Query EEA environmental data | <a href="https://discodata.eea.europa.eu/" target="_blank">Official Site</a></p>
+        </header>
+        
+        <div class="grid">
+            <div class="panel">
+                <h2>Tables</h2>
+                <ul class="table-list">
+                    {% for table in tables %}
+                    <li class="table-item" data-id="{{ table.id }}" data-fullname="{{ table.full_name }}">
+                        <div class="name">{{ table.name }}</div>
+                        <div class="meta">{{ table.columns }} columns</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="panel">
+                <h2>Query Builder</h2>
+                
+                <div id="query-form" style="display: none;">
+                    <div class="columns-section">
+                        <div class="columns-header">
+                            <span>Select Columns</span>
+                            <button onclick="selectAll()">Select All</button>
+                        </div>
+                        <div class="columns-list" id="columns-list">
+                            <div class="loading">Loading columns...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <label>WHERE clause (optional)</label>
+                        <input type="text" id="where-input" placeholder="e.g. CountryCode = 'DE'">
+                    </div>
+                    
+                    <div class="filter-section">
+                        <label>Limit rows (leave empty for ALL data)</label>
+                        <input type="number" id="limit-input" placeholder="Empty = download all">
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="previewData()">Preview</button>
+                        <button class="btn btn-primary" onclick="downloadData()">Download CSV</button>
+                    </div>
+                </div>
+                
+                <div id="no-table" class="empty">
+                    Select a table from the left to start
+                </div>
+                
+                <div class="results" id="results" style="display: none;">
+                    <div class="results-header">
+                        <span>Results</span>
+                        <span class="results-count" id="results-count"></span>
+                    </div>
+                    <div class="results-table" id="results-table"></div>
+                </div>
+                
+                <div class="error" id="error" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTable = null;
+        let allColumns = [];
+        
+        // Table selection
+        document.querySelectorAll('.table-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.table-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                currentTable = {
+                    id: item.dataset.id,
+                    fullname: item.dataset.fullname
+                };
+                
+                document.getElementById('no-table').style.display = 'none';
+                document.getElementById('query-form').style.display = 'block';
+                document.getElementById('results').style.display = 'none';
+                document.getElementById('error').style.display = 'none';
+                
+                loadColumns(currentTable.id);
+            });
+        });
+        
+        // Load columns
+        async function loadColumns(tableId) {
+            const list = document.getElementById('columns-list');
+            list.innerHTML = '<div class="loading">Loading columns...</div>';
+            
+            try {
+                const res = await fetch(`/api/columns/${tableId}`);
+                const data = await res.json();
+                
+                if (data.error) throw new Error(data.error);
+                
+                allColumns = data.columns;
+                
+                list.innerHTML = allColumns.map((col, i) => `
+                    <label class="column-item">
+                        <input type="checkbox" value="${col}" checked>
+                        ${col}
+                    </label>
+                `).join('');
+                
+            } catch (e) {
+                list.innerHTML = `<div class="error">${e.message}</div>`;
+            }
+        }
+        
+        // Select all columns
+        function selectAll() {
+            document.querySelectorAll('#columns-list input').forEach(cb => cb.checked = true);
+        }
+        
+        // Get selected columns
+        function getSelectedColumns() {
+            const checkboxes = document.querySelectorAll('#columns-list input:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+        
+        // Preview data
+        async function previewData() {
+            if (!currentTable) return;
+            
+            const columns = getSelectedColumns();
+            const where = document.getElementById('where-input').value;
+            const limit = 10; // Preview only 10 rows
+            
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results-table').innerHTML = '<div class="loading">Loading...</div>';
+            document.getElementById('error').style.display = 'none';
+            
+            try {
+                const res = await fetch('/api/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        table_id: currentTable.id,
+                        columns: columns,
+                        where: where,
+                        limit: limit
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+                
+                renderTable(data.data);
+                document.getElementById('results-count').textContent = `Showing ${data.count} rows (preview)`;
+                
+            } catch (e) {
+                document.getElementById('error').textContent = e.message;
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('results-table').innerHTML = '';
+            }
+        }
+        
+        // Download data
+        async function downloadData() {
+            if (!currentTable) {
+                alert('Please select a table first');
+                return;
+            }
+            
+            const columns = getSelectedColumns();
+            if (columns.length === 0) {
+                alert('Please select at least one column');
+                return;
+            }
+            
+            const where = document.getElementById('where-input').value;
+            const limit = document.getElementById('limit-input').value;
+            
+            // Show loading
+            const btn = document.querySelector('.btn-primary');
+            const originalText = btn.textContent;
+            btn.textContent = 'Downloading...';
+            btn.disabled = true;
+            document.getElementById('error').style.display = 'none';
+            
+            try {
+                const res = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        table_id: currentTable.id,
+                        columns: columns,
+                        where: where,
+                        limit: limit || null
+                    })
+                });
+                
+                if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || 'Download failed');
+                }
+                
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentTable.id}_export.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                btn.textContent = 'Downloaded!';
+                setTimeout(() => { btn.textContent = originalText; }, 2000);
+                
+            } catch (e) {
+                document.getElementById('error').textContent = 'Error: ' + e.message;
+                document.getElementById('error').style.display = 'block';
+                btn.textContent = originalText;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        
+        // Render table
+        function renderTable(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('results-table').innerHTML = '<div class="empty">No data</div>';
+                return;
+            }
+            
+            const cols = Object.keys(data[0]);
+            
+            let html = '<table><thead><tr>';
+            cols.forEach(col => html += `<th>${col}</th>`);
+            html += '</tr></thead><tbody>';
+            
+            data.forEach(row => {
+                html += '<tr>';
+                cols.forEach(col => {
+                    const val = row[col];
+                    html += `<td title="${val}">${val !== null ? val : ''}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            document.getElementById('results-table').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
