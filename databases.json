@@ -60,6 +60,24 @@
       "name": "Groundwater Protected Areas",
       "full_name": "[WISE_WFD].[v2r1].[GWB_GroundWaterBody_GWAssociatedProtectedArea]",
       "columns": 33
+    },
+    {
+      "id": "surface_water_protected",
+      "name": "Surface Water Protected Areas",
+      "full_name": "[WISE_WFD].[v2r1].[SWB_SurfaceWaterBody_SWAssociatedProtectedArea]",
+      "columns": 36
+    },
+    {
+      "id": "art17_contact",
+      "name": "Art17 Contacts (T_Art17_FLAContact)",
+      "full_name": "[WISE_UWWTD].[v1r1].[T_Art17_FLAContact]",
+      "columns": 19
+    },
+    {
+      "id": "report_period",
+      "name": "Report Period (T_ReportPeriod)",
+      "full_name": "[WISE_UWWTD].[v1r1].[T_ReportPeriod]",
+      "columns": 10
     }
   ]
 }

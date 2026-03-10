@@ -1,0 +1,19 @@
+{
+  "extract_date": "2026-03-09",
+  "extract_time": "21:13:48",
+  "extract_timestamp": "2026-03-09T21:13:48.744043",
+  "tables": {
+    "plants": 26064,
+    "agglomerations": 25208,
+    "plant_agglo_links": 25768,
+    "discharge_points": 25706,
+    "art17_investments": 4904,
+    "art17_contacts": 36,
+    "report_periods": 30,
+    "swb_surface_water": 0,
+    "gwb_groundwater": 0,
+    "swb_protected_areas": 0,
+    "gwb_protected_areas": 0
+  },
+  "total_rows": 107716
+}
