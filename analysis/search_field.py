@@ -1,7 +1,10 @@
 """
 在 WFD 表中搜索 ReportNetEnvelopeFileId 字段
 """
-from discodata_client import DiscoDataClient
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import DiscoDataClient
 
 client = DiscoDataClient()
 

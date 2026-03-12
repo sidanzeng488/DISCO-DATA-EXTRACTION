@@ -1,5 +1,8 @@
 """验证 dcpGroundWater 是否链接到 GWB 表"""
-from discodata_client import DiscoDataClient
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import DiscoDataClient
 client = DiscoDataClient()
 
 # 取一个 dcpGroundWater 值

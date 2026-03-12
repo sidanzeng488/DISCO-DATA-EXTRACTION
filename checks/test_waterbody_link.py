@@ -1,7 +1,10 @@
 """
 测试 dcpWaterbodyID 链接到哪个主表
 """
-from discodata_client import DiscoDataClient
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import DiscoDataClient
 
 client = DiscoDataClient()
 

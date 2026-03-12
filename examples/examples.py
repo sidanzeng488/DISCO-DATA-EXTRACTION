@@ -8,8 +8,10 @@ Your configured tables:
 - T_DischargePoints (排放点)
 - T_Art17_FLAUWWTP (投资项目)
 """
-
-from discodata_client import create_client
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import create_client
 
 
 # ============================================================

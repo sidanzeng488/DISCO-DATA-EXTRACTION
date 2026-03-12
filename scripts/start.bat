@@ -5,7 +5,8 @@ echo   DISCODATA Explorer - Starting...
 echo ========================================
 echo.
 
-cd /d "%~dp0"
+:: Change to project root directory (one level up from scripts/)
+cd /d "%~dp0\.."
 
 echo Starting server on http://localhost:5000
 echo.
@@ -14,6 +15,6 @@ echo.
 start "" cmd /c "timeout /t 2 >nul && start http://localhost:5000"
 
 :: Start server
-python -m waitress --host=127.0.0.1 --port=5000 app:app
+python -m waitress --host=127.0.0.1 --port=5000 web.app:app
 
 pause

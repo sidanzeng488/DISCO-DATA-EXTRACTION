@@ -2,8 +2,10 @@
 DISCODATA API Connection Test
 Tests the connection to EEA DISCODATA API
 """
-
-from discodata_client import create_client
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import create_client
 import json
 
 def test_connection():

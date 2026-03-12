@@ -1,7 +1,10 @@
 """
 检查 dcpWaterbodyID 是否也链接到 GWB (Ground Water Body)
 """
-from discodata_client import DiscoDataClient
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import DiscoDataClient
 
 client = DiscoDataClient()
 

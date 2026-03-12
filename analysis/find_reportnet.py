@@ -2,7 +2,10 @@
 搜索 ReportNetEnvelopeFileId 字段
 尝试更多可能的 UWWTD 表
 """
-from discodata_client import DiscoDataClient
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import DiscoDataClient
 
 client = DiscoDataClient()
 

@@ -6,7 +6,9 @@ Write-Host "  DISCODATA Explorer - Share Mode" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-Set-Location $PSScriptRoot
+# Change to project root directory (one level up from scripts/)
+$projectRoot = Split-Path $PSScriptRoot -Parent
+Set-Location $projectRoot
 
 # Check if ngrok is installed
 $ngrokPath = Get-Command ngrok -ErrorAction SilentlyContinue
@@ -26,7 +28,7 @@ if (-not $ngrokPath) {
 
 # Start server
 Write-Host "[1/2] Starting Server (port 5000)..." -ForegroundColor Yellow
-$serverProcess = Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PSScriptRoot'; python -m waitress --host=0.0.0.0 --port=5000 app:app" -PassThru
+$serverProcess = Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$projectRoot'; python -m waitress --host=0.0.0.0 --port=5000 web.app:app" -PassThru
 
 Start-Sleep -Seconds 3
 

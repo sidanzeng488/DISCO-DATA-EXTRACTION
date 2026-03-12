@@ -7,12 +7,16 @@ https://discodata.eea.europa.eu/
 
 import json
 import os
-from discodata_client import create_client
+import sys
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import create_client
 
 
 def load_config():
     """Load databases config"""
-    config_path = os.path.join(os.path.dirname(__file__), 'databases.json')
+    config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'databases.json')
     with open(config_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 

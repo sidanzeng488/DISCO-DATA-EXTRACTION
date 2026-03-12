@@ -1,12 +1,13 @@
 """
-填充 requires_quaternary_treatment 字段
-基于修订后的 UWWTD 阈值和接收水体敏感性
+Fill requires_quaternary_treatment field
+Based on revised UWWTD thresholds and receiving water sensitivity
 
-逻辑：
-- >= 150,000 PE → "Yes"
-- >= 10,000 PE + 敏感水体(bathing/drinking/shellfish) → "Likely"  
-- 其他 → "No"
-- 无 capacity 数据 → NULL
+Logic:
+- >= 150,000 PE -> "Yes"
+- >= 10,000 PE + sensitive water (bathing/drinking/shellfish) -> "Likely"
+- >= 10,000 PE + dilution ratio < 10 -> "Likely"
+- Others -> "No"
+- No capacity data -> NULL
 """
 import psycopg2
 import sys
@@ -40,8 +41,9 @@ else:
     conn.commit()
     print("   Column added")
 
-# Step 2: 获取 >= 10,000 PE 且排放到敏感水体的 plants
-print("\n2. Finding plants with sensitive receiving waters...")
+# Step 2a: Find plants >= 10,000 PE with sensitive receiving waters
+print("\n2. Finding plants with sensitive conditions...")
+print("   2a. Plants with sensitive protected areas...")
 cur.execute("""
     SELECT DISTINCT p.uwwtp_code
     FROM plants p
@@ -52,7 +54,24 @@ cur.execute("""
     AND wpa.protected_area_type IN ('Bathing waters', 'Drinking water protection area', 'Shellfish designated water')
 """)
 sensitive_plants = set(r[0] for r in cur.fetchall())
-print(f"   Found {len(sensitive_plants)} plants (10k-150k PE) with sensitive waters")
+print(f"       Found {len(sensitive_plants)} plants with sensitive protected areas")
+
+# Step 2b: Find plants >= 10,000 PE with dilution ratio < 10
+print("   2b. Plants with low dilution ratio (< 10)...")
+cur.execute("""
+    SELECT DISTINCT uwwtp_code
+    FROM plants
+    WHERE plant_capacity >= 10000
+    AND plant_capacity < 150000
+    AND dilution IS NOT NULL
+    AND dilution < 10
+""")
+low_dilution_plants = set(r[0] for r in cur.fetchall())
+print(f"       Found {len(low_dilution_plants)} plants with dilution < 10")
+
+# Combine both conditions
+sensitive_plants = sensitive_plants.union(low_dilution_plants)
+print(f"   Total plants meeting 'Likely' criteria: {len(sensitive_plants)}")
 
 # Step 3: 填充数据
 print("\n3. Populating values...")
@@ -67,8 +86,8 @@ cur.execute("""
 yes_count = cur.rowcount
 print(f"   Updated {yes_count} plants to 'Yes'")
 
-# 3b: Set "Likely" for 10k-150k PE with sensitive waters
-print("   Setting 'Likely' for 10k-150k PE + sensitive waters...")
+# 3b: Set "Likely" for 10k-150k PE with sensitive waters OR low dilution
+print("   Setting 'Likely' for 10k-150k PE + sensitive waters or dilution < 10...")
 if sensitive_plants:
     # 使用 IN 子句批量更新
     placeholders = ','.join(['%s'] * len(sensitive_plants))
@@ -109,11 +128,11 @@ for row in cur.fetchall():
     val = row[0] if row[0] else 'NULL'
     print(f"     {val}: {row[1]}")
 
-# Step 5: 添加注释
+# Step 5: Add column comment
 print("\n5. Adding column comment...")
 cur.execute("""
     COMMENT ON COLUMN plants.requires_quaternary_treatment IS 
-    'Quaternary treatment requirement under revised UWWTD: Yes (>=150k PE), Likely (>=10k PE + sensitive receiving water), No (others)'
+    'Quaternary treatment requirement under revised UWWTD: Yes (>=150k PE), Likely (>=10k PE + sensitive receiving water OR dilution < 10), No (others)'
 """)
 conn.commit()
 print("   Comment added")

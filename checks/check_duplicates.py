@@ -1,5 +1,8 @@
 """检查 T_UWWTPS 表是否有重复值"""
-from discodata_client import DiscoDataClient
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from core.discodata_client import DiscoDataClient
 client = DiscoDataClient()
 
 print("=" * 60)

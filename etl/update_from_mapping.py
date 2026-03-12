@@ -129,7 +129,7 @@ def update_plants(cur):
             clean(row.get('uwwPTotPerf')),      # phosphorus_compliance
             clean(row.get('uwwOtherPerf')),     # other_compliance
             # 日期
-            to_date(row.get('uwwBeginLife')),   # commissioning_date
+            to_date(row.get('uwwBeginLife')),   # initial_designation_date
             # 容量
             to_float(row.get('uwwWasteWaterTreated')),  # volume_wastewater_reused_m3_per_year
             # WHERE
@@ -144,7 +144,7 @@ def update_plants(cur):
         WHERE table_name = 'plants' AND column_name IN (
             'bod_compliance', 'cod_compliance', 'tss_compliance',
             'nitrogen_compliance', 'phosphorus_compliance', 'other_compliance',
-            'commissioning_date', 'volume_wastewater_reused_m3_per_year'
+            'initial_designation_date', 'volume_wastewater_reused_m3_per_year'
         )
     """)
     existing_cols = [r[0] for r in cur.fetchall()]
@@ -161,13 +161,13 @@ def update_plants(cur):
     
     updated_count = 0
     
-    if 'commissioning_date' in all_cols:
-        print('  Updating commissioning_date...')
+    if 'initial_designation_date' in all_cols:
+        print('  Updating initial_designation_date...')
         updates_date = [(to_date(row.get('uwwBeginLife')), clean(row.get('uwwCode'))) 
                        for row in data if clean(row.get('uwwCode'))]
-        sql = "UPDATE plants SET commissioning_date = COALESCE(commissioning_date, %s) WHERE uwwtp_code = %s"
+        sql = "UPDATE plants SET initial_designation_date = COALESCE(initial_designation_date, %s) WHERE uwwtp_code = %s"
         execute_batch(cur, sql, updates_date, page_size=1000)
-        print(f'    ✓ Updated commissioning_date')
+        print(f'    ✓ Updated initial_designation_date')
         updated_count += 1
     
     if 'volume_wastewater_reused_m3_per_year' in all_cols:
@@ -177,6 +177,15 @@ def update_plants(cur):
         sql = "UPDATE plants SET volume_wastewater_reused_m3_per_year = COALESCE(volume_wastewater_reused_m3_per_year, %s) WHERE uwwtp_code = %s"
         execute_batch(cur, sql, updates_vol, page_size=1000)
         print(f'    ✓ Updated volume_wastewater_reused_m3_per_year')
+        updated_count += 1
+    
+    if 'hyperlink' in all_cols:
+        print('  Updating hyperlink...')
+        updates_link = [(clean(row.get('uwwHyperlink')), clean(row.get('uwwCode'))) 
+                       for row in data if clean(row.get('uwwCode'))]
+        sql = "UPDATE plants SET hyperlink = COALESCE(hyperlink, %s) WHERE uwwtp_code = %s"
+        execute_batch(cur, sql, updates_link, page_size=1000)
+        print(f'    ✓ Updated hyperlink')
         updated_count += 1
     
     print(f'  Total fields updated: {updated_count}')

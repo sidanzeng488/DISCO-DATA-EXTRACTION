@@ -27,7 +27,7 @@ COMMENT ON COLUMN plants.agglomeration_id IS 'Foreign key to agglomeration table
 
 -- Calculated fields (revised UWWTD)
 COMMENT ON COLUMN plants.actual_pe_greater_than_plant_design_pe IS 'Whether actual load exceeds design capacity: TRUE if plant_waste_load_pe > plant_capacity (calculated field)';
-COMMENT ON COLUMN plants.requires_quaternary_treatment IS 'Quaternary treatment requirement under revised UWWTD: Yes (>=150k PE), Likely (>=10k PE + sensitive receiving water), No (others) - based on bathing/drinking/shellfish protected areas';
+COMMENT ON COLUMN plants.requires_quaternary_treatment IS 'Quaternary treatment requirement under revised UWWTD: Yes (>=150k PE), Likely (>=10k PE + sensitive receiving water OR dilution < 10), No (others)';
 COMMENT ON COLUMN plants.requires_energy_self_sufficiency IS 'Energy self-sufficiency requirement under revised UWWTD Article 11 (linked to uwwtd_requirement.treatment_tier = Energy-self suffiency via plant_requirement_link table). Values: Yes = plant_capacity >= 10,000 PE, No = otherwise. Deadline targets: 20% renewable by 2030, 40% by 2035, 70% by 2040, 100% by 2045. Energy audits required every 4 years.';
 
 -- Treatment types (Boolean flags)
@@ -91,11 +91,12 @@ COMMENT ON COLUMN plants.pct_wastewater_reused IS 'Percentage of treated wastewa
 COMMENT ON COLUMN plants.volume_wastewater_reused_m3_per_year IS 'Mean annual volume of waste water treated in m3/year (uwwWasteWaterTreated)';
 
 -- Dates and notes
-COMMENT ON COLUMN plants.commissioning_date IS 'Date when the UWWTP started operation (uwwBeginLife)';
+COMMENT ON COLUMN plants.initial_designation_date IS 'Date of first designation by the official (uwwBeginLife)';
 COMMENT ON COLUMN plants.date_published IS 'Report publication date from T_ReportPeriod.repVersion';
 COMMENT ON COLUMN plants.date_situation_at IS 'Data situation date from T_ReportPeriod.repSituationAt';
 COMMENT ON COLUMN plants.failure_notes IS 'Further information on cause of non-compliance failure (uwwInformation)';
 COMMENT ON COLUMN plants.plant_notes IS 'General remarks about the UWWTP (uwwRemarks)';
+COMMENT ON COLUMN plants.hyperlink IS 'External URL link to plant information (uwwHyperlink)';
 
 -- Article 17 Investment fields (T_Art17_FLAUWWTP)
 COMMENT ON COLUMN plants.article17_report_date IS 'Article 17 report situation date from T_Art17_FLAContact.flaconSituationAt';
