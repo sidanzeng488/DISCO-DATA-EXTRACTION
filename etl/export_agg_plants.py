@@ -59,7 +59,7 @@ cur.execute("""
     ORDER BY p.country_code, a.agg_code, p.uwwtp_code
 """)
 detail_rows = cur.fetchall()
-detail_headers = ['uwwtp_code', 'plant_name', 'country_code', 'plant_capacity', 'plant_waste_load_pe', 'agg_code', 'agglomeration_name', 'agg_generated', 'rep_code']
+detail_headers = ['uwwtp_code', 'plant_name', 'country_code', 'plant_capacity', 'plant_waste_load_pe', 'agg_code', 'agglomeration_name', 'agg_generated_pe', 'rep_code']
 
 detail_file = os.path.join(OUTPUT_DIR, 'plants_by_agglomeration_detail.csv')
 with open(detail_file, 'w', newline='', encoding='utf-8') as f:
@@ -86,7 +86,7 @@ cur.execute("""
     ORDER BY plant_count DESC, p.country_code, a.agg_code
 """)
 summary_rows = cur.fetchall()
-summary_headers = ['agg_code', 'agglomeration_name', 'country_code', 'agg_generated', 'plant_count', 'total_plant_capacity', 'total_waste_load_pe', 'avg_plant_capacity']
+summary_headers = ['agg_code', 'agglomeration_name', 'country_code', 'agg_generated_pe', 'plant_count', 'total_plant_capacity', 'total_waste_load_pe', 'avg_plant_capacity']
 
 summary_file = os.path.join(OUTPUT_DIR, 'plants_by_agglomeration_summary.csv')
 with open(summary_file, 'w', newline='', encoding='utf-8') as f:
